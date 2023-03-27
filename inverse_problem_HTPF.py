@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.optimize import leastsq
 
+
 # Define the residuals function
 def residuals(params, sigma, theta, phi, z):
     gamma, S1, S2, alpha1, alpha2, lamda, eta = params
