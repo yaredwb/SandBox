@@ -1,37 +1,30 @@
 import streamlit as st
-
-st.title("My First Streamlit Web App")
-st.write("Welcome to this simple Streamlit web application!")
-
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
-df = pd.DataFrame({
-    'Column 1': [1, 2, 3, 4],
-    'Column 2': [10, 20, 30, 40]
-})
+# Title of the app
+st.title("Data Analysis App")
+
+# Sidebar for data generation settings
+st.sidebar.header("Data Settings")
+num_rows = st.sidebar.slider("Number of rows:", min_value=50, max_value=500, value=100)
+num_cols = st.sidebar.slider("Number of columns:", min_value=1, max_value=10, value=9)
+
+# Generate random data
+df = pd.DataFrame(np.random.randn(num_rows, num_cols), columns=[f"Column {i+1}" for i in range(num_cols)])
+
+# Display the dataframe in the app
+st.write("### Generated Data Preview:")
 st.dataframe(df)
 
-import pydeck as pdk
+# Sidebar for column selection for histogram
+column_to_plot = st.sidebar.selectbox("Choose a column to plot:", df.columns)
 
-chart = pdk.Deck(
-    map_style='mapbox://styles/mapbox/light-v9',
-    initial_view_state=pdk.ViewState(
-        latitude=37.76,
-        longitude=-122.4,
-        zoom=11,
-        pitch=50,
-    ),
-    layers=[
-        pdk.Layer(
-            'HexagonLayer',
-            data=df,
-            get_position='[lon, lat]',
-            radius=200,
-            elevation_scale=4,
-            elevation_range=[0, 1000],
-            pickable=True,
-            extruded=True,
-        ),
-    ],
-)
-st.pydeck_chart(chart)
+# Plot histogram
+st.write(f"### Histogram of {column_to_plot}")
+fig, ax = plt.subplots()
+ax.hist(df[column_to_plot], bins=30, edgecolor='black')
+ax.set_xlabel(column_to_plot)
+ax.set_ylabel('Frequency')
+st.pyplot(fig)
